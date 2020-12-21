@@ -1,5 +1,8 @@
 #include <unistd.h>
 #include <stdlib.h>
+#include <fcntl.h>
+#include <stdio.h>
+
 #define BUFSIZE 32
 
 int		ft_strlen(char *str)
@@ -96,14 +99,13 @@ char	*ft_push_str(char **line, char *str, int *check)
 	return (str);
 }
 
-int		get_next_line(char **line)
+int		get_next_line(int fd, char **line)
 {
 	static char	*backup = NULL;
 	char		buffer[BUFSIZE + 1];
 	int			check;
 	int			ret;
 
-	check = NULL;
 	if (line == NULL)
 		return (-1);
 	buffer[BUFSIZE] = '\0';
@@ -116,11 +118,12 @@ int		get_next_line(char **line)
 	if (backup != NULL)
 		free(backup);
 	backup = NULL;
-	while ((ret = read(0, buffer, BUFSIZE)))
+	while ((ret = read(fd, buffer, BUFSIZE)))
 	{
 		if (ret == BUFSIZE)
 		{
-			backup = ft_strdup(ft_push_str(line, buffer, check));
+			write(1, "bbbb\n", 5);
+			backup = ft_strdup(ft_push_str(line, buffer, &check));
 			if (check)
 				return (1);
 			if (backup != NULL)
@@ -130,7 +133,8 @@ int		get_next_line(char **line)
 		}
 		if (ret < BUFSIZE)
 		{
-			backup = ft_strdup(ft_push_str(line, buffer, check));
+			write(1, "cccc\n", 5);
+			backup = ft_strdup(ft_push_str(line, buffer, &check));
 			if (check)
 				return (1);
 			if (backup != NULL)
@@ -138,8 +142,17 @@ int		get_next_line(char **line)
 			backup = NULL;
 			return (0);
 		}
+			write(1, "bbbb\n", 5);
 	}
 	return (0);
 }
 
-int
+int	main()
+{
+	char	*line;
+	int		fd;
+
+	fd = open("./test", O_RDONLY);
+	while (get_next_line(fd, &line))
+		printf("%s", line);
+}
