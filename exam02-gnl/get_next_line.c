@@ -100,7 +100,7 @@ int		get_next_line(char **line)
 {
 	static char	*backup = NULL;
 	char		buffer[BUFSIZE + 1];
-	int			*check;
+	int			check;
 	int			ret;
 
 	check = NULL;
@@ -110,7 +110,7 @@ int		get_next_line(char **line)
 	if (backup == NULL)
 		backup = ft_strdup("");
 	*line = ft_strdup("");
-	backup = ft_push_str(line, backup, check);
+	backup = ft_push_str(line, backup, &check);
 	if (check)
 		return (1);
 	if (backup != NULL)
@@ -141,3 +141,5 @@ int		get_next_line(char **line)
 	}
 	return (0);
 }
+
+int
