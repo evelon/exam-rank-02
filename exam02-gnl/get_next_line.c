@@ -78,14 +78,18 @@ char	*ft_push_str(char **line, char *str, int *check)
 	if (ind == -1)
 	{
 		temp = ft_strjoin(*line, str);
-		free(*line);
+		if (*line != NULL)
+			free(*line);
+		*line = NULL;
 		*line = temp;
 		*check = 0;
 		return (str);
 	}
 	str[ind] = '\0';
 	temp = ft_strjoin(*line, str);
-	free(*line);
+	if (*line != NULL)
+		free(*line);
+	*line = NULL;
 	*line = temp;
 	str += ind + 1;
 	*check = 1;
@@ -109,7 +113,9 @@ int		get_next_line(char **line)
 	backup = ft_push_str(line, backup, check);
 	if (check)
 		return (1);
-	free(backup);
+	if (backup != NULL)
+		free(backup);
+	backup = NULL;
 	while ((ret = read(0, buffer, BUFSIZE)))
 	{
 		if (ret == BUFSIZE)
@@ -117,7 +123,9 @@ int		get_next_line(char **line)
 			backup = ft_strdup(ft_push_str(line, buffer, check));
 			if (check)
 				return (1);
-			free(backup);
+			if (backup != NULL)
+				free(backup);
+			backup = NULL;
 			continue;
 		}
 		if (ret < BUFSIZE)
@@ -125,7 +133,9 @@ int		get_next_line(char **line)
 			backup = ft_strdup(ft_push_str(line, buffer, check));
 			if (check)
 				return (1);
-			free(backup);
+			if (backup != NULL)
+				free(backup);
+			backup = NULL;
 			return (0);
 		}
 	}
